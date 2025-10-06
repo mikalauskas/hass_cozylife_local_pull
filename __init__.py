@@ -5,7 +5,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.helpers.typing import ConfigType
 import logging
-import time
 from .const import (
     DOMAIN,
     LANG
@@ -18,15 +17,13 @@ from .tcp_client import tcp_client
 _LOGGER = logging.getLogger(__name__)
 
 
-def setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """
     TODO:timer discover
     config:{'lang': 'zh', 'ip': ['192.168.5.201', '192.168.5.202', '192.168.5.1']}
-}
     """
     ip = get_ip()
-    ip_from_config = config[DOMAIN].get('ip') if config[DOMAIN].get('ip') is not None else []    
+    ip_from_config = config[DOMAIN].get('ip') if config[DOMAIN].get('ip') is not None else []
     ip += ip_from_config
     ip_list = []
     [ip_list.append(i) for i in ip if i not in ip_list]
@@ -45,11 +42,8 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         'tcp_client': [tcp_client(item) for item in ip_list],
     }
 
-    #wait for get device info from tcp conncetion
-    #but it is bad
-    time.sleep(3)
-    # _LOGGER.info('setup', hass, config)
-    # hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
-    hass.loop.call_soon_threadsafe(hass.async_create_task, async_load_platform(hass, 'light', DOMAIN, {}, config))
-    hass.loop.call_soon_threadsafe(hass.async_create_task, async_load_platform(hass, 'switch', DOMAIN, {}, config))
+    # Load platforms asynchronously without blocking
+    hass.async_create_task(async_load_platform(hass, 'light', DOMAIN, {}, config))
+    hass.async_create_task(async_load_platform(hass, 'switch', DOMAIN, {}, config))
+    
     return True
