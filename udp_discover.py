@@ -1,5 +1,5 @@
 import socket
-import time
+import asyncio
 from .utils import get_sn
 import logging
 
@@ -11,7 +11,7 @@ discover device
 """
 
 
-def get_ip() -> list:
+async def get_ip() -> list:
     """
     get device ip
     :return: list
@@ -33,7 +33,7 @@ def get_ip() -> list:
     while i < 3:
         # server.sendto(bytes(message, encoding='utf-8'), ('<broadcast>', 6095))
         server.sendto(bytes(message, encoding='utf-8'), ('255.255.255.255', 6095))
-        time.sleep(0.03)
+        await asyncio.sleep(0.03)
         i += 1
 
     # max tries before first data received

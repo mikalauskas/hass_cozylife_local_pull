@@ -22,7 +22,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     TODO:timer discover
     config:{'lang': 'zh', 'ip': ['192.168.5.201', '192.168.5.202', '192.168.5.1']}
     """
-    ip = get_ip()
+    ip = await get_ip()
     ip_from_config = config[DOMAIN].get('ip') if config[DOMAIN].get('ip') is not None else []
     ip += ip_from_config
     ip_list = []
