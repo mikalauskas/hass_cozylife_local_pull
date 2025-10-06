@@ -9,7 +9,7 @@ from .const import (
     DOMAIN,
     LANG
 )
-from .utils import get_pid_list
+from .utils import get_pid_list, async_get_pid_list
 from .udp_discover import get_ip
 from .tcp_client import tcp_client
 
@@ -34,7 +34,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     _LOGGER.info('try conncet ip_list:', ip_list)
     lang_from_config = (config[DOMAIN].get('lang') if config[DOMAIN].get('lang') is not None else LANG)
-    get_pid_list(lang_from_config)
+    await async_get_pid_list(lang_from_config)
 
     hass.data[DOMAIN] = {
         'temperature': 24,
